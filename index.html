@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FitFlow">
+    <title>💪 FitFlow</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💪</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💪</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .screen {
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1 {
+            font-size: 42px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .option-btn {
+            padding: 30px 20px;
+            border: 3px solid #e5e7eb;
+            border-radius: 15px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .option-btn:active {
+            transform: scale(0.95);
+        }
+
+        .option-btn.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option-btn .emoji {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .option-btn .title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .option-btn .desc {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .option-btn.full-width {
+            grid-column: span 2;
+        }
+
+        .slider-container {
+            margin-bottom: 40px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e5e7eb;
+            outline: none;
+            -webkit-appearance: none;
+            margin-bottom: 10px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .primary-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .primary-btn:active {
+            transform: scale(0.98);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            background: #e5e7eb;
+            height: 8px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .exercise-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .exercise-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .exercise-name {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .exercise-reps {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .exercise-instruction {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .timer-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .timer-time {
+            font-size: 72px;
+            font-weight: bold;
+            color: white;
+            font-family: monospace;
+        }
+
+        .timer-label {
+            color: rgba(255,255,255,0.9);
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .control-btn {
+            width: 80px;
+            height: 80px;
+            border: none;
+            border-radius: 50%;
+            font-size: 32px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .play-btn {
+            background: #10b981;
+            color: white;
+        }
+
+        .pause-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        .skip-btn {
+            background: #6b7280;
+            color: white;
+        }
+
+        .next-exercises {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .next-exercises h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+            text-align: left;
+        }
+
+        .next-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            padding: 12px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .next-item-emoji {
+            font-size: 24px;
+        }
+
+        .next-item-info {
+            flex: 1;
+        }
+
+        .next-item-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .next-item-reps {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .complete-display {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .complete-emoji {
+            font-size: 100px;
+            margin-bottom: 20px;
+        }
+
+        .complete-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .complete-subtitle {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .stats-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .stats-number {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stats-label {
+            font-size: 18px;
+        }
+
+        .rest-indicator {
+            color: #10b981;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Home Screen -->
+        <div id="home-screen" class="screen">
+            <h1>FitFlow 💪</h1>
+            <p class="subtitle">Your dream body starts here</p>
+            
+            <h2>Where are you working out?</h2>
+            
+            <div class="button-grid">
+                <div class="option-btn" onclick="selectLocation('gym')">
+                    <div class="emoji">🏋️</div>
+                    <div class="title">Gym</div>
+                </div>
+                <div class="option-btn" onclick="selectLocation('home')">
+                    <div class="emoji">🏠</div>
+                    <div class="title">Home</div>
+                </div>
+            </div>
+            
+            <div id="workout-selection" class="hidden">
+                <h2>What do you want to work on?</h2>
+                <div id="workout-buttons" class="button-grid"></div>
+            </div>
+            
+            <div id="duration-selection" class="hidden">
+                <h2>How long? (<span id="duration-display">30</span> min)</h2>
+                <div class="slider-container">
+                    <input type="range" id="duration-slider" min="15" max="60" step="5" value="30" oninput="updateDuration(this.value)">
+                    <div class="slider-labels">
+                        <span>15 min</span>
+                        <span>60 min</span>
+                    </div>
+                </div>
+                
+                <button class="primary-btn" onclick="startWorkout()">Start Workout 🚀</button>
+            </div>
+        </div>
+
+        <!-- Workout Screen -->
+        <div id="workout-screen" class="screen hidden">
+            <div class="header">
+                <button class="back-btn" onclick="goHome()">← Back</button>
+                <div style="font-weight: 600; color: #666;">
+                    <span id="current-exercise-num">1</span> / <span id="total-exercises">0</span>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+            </div>
+            
+            <div class="exercise-display">
+                <div id="exercise-emoji" class="exercise-emoji">🍑</div>
+                <div id="exercise-name" class="exercise-name">Exercise Name</div>
+                <div id="exercise-reps" class="exercise-reps">12-15 reps</div>
+                <div id="exercise-instruction" class="exercise-instruction">Instruction here</div>
+            </div>
+            
+            <div class="timer-display">
+                <div id="timer-display" class="timer-time">0:45</div>
+                <div id="timer-label" class="timer-label">Time remaining</div>
+            </div>
+            
+            <div class="controls">
+                <button id="play-pause-btn" class="control-btn play-btn" onclick="togglePlayPause()">▶</button>
+                <button class="control-btn skip-btn" onclick="skipExercise()">⏭</button>
+            </div>
+            
+            <div class="next-exercises">
+                <h3>Up Next:</h3>
+                <div id="next-exercises-list"></div>
+            </div>
+        </div>
+
+        <!-- Complete Screen -->
+        <div id="complete-screen" class="screen hidden">
+            <div class="complete-display">
+                <div class="complete-emoji">🎉</div>
+                <div class="complete-title">Workout Complete!</div>
+                <div class="complete-subtitle">You crushed it! One step closer to your dream body.</div>
+                
+                <div class="stats-box">
+                    <div id="stats-number" class="stats-number">0</div>
+                    <div class="stats-label">Exercises Completed</div>
+                </div>
+                
+                <button class="primary-btn" onclick="goHome()">Start New Workout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Workout Database - Optimized for booty growth, lean muscle, fat burn & feminine sculpting
+        const workoutDatabase = {
+            gym: {
+                booty: [
+                    { name: 'Barbell Hip Thrusts', duration: 50, reps: '10-12 HEAVY', rest: 40, image: '🍑', instruction: 'THE BEST for booty growth! Go heavy, squeeze hard at top for 2 seconds' },
+                    { name: 'Bulgarian Split Squats', duration: 50, reps: '10 each leg', rest: 35, image: '🔥', instruction: 'Incredible glute builder! Back foot elevated, feel the burn in your booty' },
+                    { name: 'Sumo Deadlifts', duration: 50, reps: '10-12', rest: 35, image: '💎', instruction: 'Builds lower glutes and inner thighs! Wide stance, squeeze glutes at top' },
+                    { name: 'Cable Kickbacks', duration: 45, reps: '15 each leg', rest: 25, image: '🎯', instruction: 'Perfect glute isolation! Squeeze and hold each rep' },
+                    { name: 'Walking Lunges', duration: 50, reps: '12 each leg', rest: 30, image: '👑', instruction: 'Sculpts entire lower body! Long strides, feel glutes stretch' },
+                    { name: 'Glute-Focused Leg Press', duration: 45, reps: '15', rest: 30, image: '🦵', instruction: 'Feet high and wide! Push through heels to target glutes' },
+                    { name: 'Single-Leg Glute Bridge', duration: 45, reps: '12 each', rest: 25, image: '🌟', instruction: 'One leg at a time! Maximum glute activation' },
+                    { name: 'Cable Pull-Throughs', duration: 40, reps: '15', rest: 25, image: '💪', instruction: 'Hinge back, explode forward! Builds glute power' },
+                ],
+                abs: [
+                    { name: 'Hanging Knee Raises', duration: 45, reps: '12-15', rest: 30, image: '🎯', instruction: 'Sculpts lower abs! Control the movement, no swinging' },
+                    { name: 'Cable Woodchoppers', duration: 45, reps: '12 each side', rest: 25, image: '⚡', instruction: 'Tones obliques for that hourglass! Rotate from core' },
+                    { name: 'Dead Bug', duration: 50, reps: '10 each side', rest: 25, image: '🐞', instruction: 'Flattens stomach! Opposite arm and leg, keep back flat' },
+                    { name: 'Bicycle Crunches', duration: 45, reps: '20 total', rest: 20, image: '🚴', instruction: 'Burns fat and sculpts! Fast pace, bring elbow to opposite knee' },
+                    { name: 'Plank with Hip Dips', duration: 50, reps: '10 each side', rest: 25, image: '🔥', instruction: 'Cinches waist! Dip hips side to side in plank' },
+                    { name: 'Mountain Climbers', duration: 40, reps: '40 total', rest: 25, image: '⛰️', instruction: 'Fat burner! Fast pace for cardio + abs' },
+                    { name: 'Russian Twists', duration: 45, reps: '30 total', rest: 25, image: '🔄', instruction: 'Defines obliques! Weight touches floor each side' },
+                ],
+                arms: [
+                    { name: 'Tricep Dips', duration: 45, reps: '12-15', rest: 30, image: '💪', instruction: 'Tones back of arms! No more arm jiggle' },
+                    { name: 'Dumbbell Shoulder Press', duration: 45, reps: '12', rest: 30, image: '👑', instruction: 'Creates gorgeous shoulder definition! Press overhead' },
+                    { name: 'Cable Lateral Raises', duration: 40, reps: '15', rest: 25, image: '🦋', instruction: 'Sculpts shoulders! Lift arms out to sides' },
+                    { name: 'Overhead Tricep Extension', duration: 45, reps: '15', rest: 25, image: '⬆️', instruction: 'Tightens triceps! Elbows stay still, full stretch' },
+                    { name: 'Hammer Curls', duration: 40, reps: '12', rest: 25, image: '🔨', instruction: 'Tones biceps beautifully! Controlled movement' },
+                    { name: 'Cable Tricep Pushdowns', duration: 45, reps: '15', rest: 25, image: '⚡', instruction: 'Lean, defined arms! Full extension, squeeze' },
+                    { name: 'Front Raises', duration: 40, reps: '12', rest: 25, image: '🌟', instruction: 'Sculpts front delts! Lift to eye level' },
+                ],
+                legs: [
+                    { name: 'Goblet Squats', duration: 50, reps: '15', rest: 30, image: '🏆', instruction: 'Shapes entire lower body! Chest up, squat deep' },
+                    { name: 'Romanian Deadlifts', duration: 50, reps: '12', rest: 35, image: '🔥', instruction: 'Sculpts hamstrings and glutes! Feel the stretch' },
+                    { name: 'Leg Press', duration: 50, reps: '15', rest: 30, image: '🦵', instruction: 'Builds lean muscle! Full range, controlled' },
+                    { name: 'Curtsy Lunges', duration: 45, reps: '12 each', rest: 25, image: '👸', instruction: 'Targets side glutes! Cross back like a curtsy' },
+                    { name: 'Leg Extensions', duration: 45, reps: '15', rest: 25, image: '💎', instruction: 'Defines quads beautifully! Squeeze at top' },
+                    { name: 'Hamstring Curls', duration: 45, reps: '15', rest: 25, image: '🌊', instruction: 'Sculpts back of thighs! Slow and controlled' },
+                    { name: 'Calf Raises', duration: 40, reps: '20', rest: 20, image: '👠', instruction: 'Gorgeous calf definition! Full stretch and squeeze' },
+                    { name: 'Step-Ups', duration: 45, reps: '10 each', rest: 30, image: '🎯', instruction: 'Tones glutes and thighs! Drive through heel' },
+                ],
+                fullbody: [
+                    { name: 'Dumbbell Thrusters', duration: 45, reps: '12', rest: 30, image: '🚀', instruction: 'Total body fat burner! Squat to press' },
+                    { name: 'Kettlebell Swings', duration: 45, reps: '20', rest: 30, image: '🔥', instruction: 'Burns fat, builds glutes! Explosive hip thrust' },
+                    { name: 'Burpees', duration: 40, reps: '10', rest: 30, image: '💥', instruction: 'Ultimate fat burner! Full body cardio' },
+                    { name: 'Dumbbell Snatches', duration: 45, reps: '10 each', rest: 30, image: '⚡', instruction: 'Power move for fat loss! Explosive lift' },
+                    { name: 'Box Jumps', duration: 40, reps: '12', rest: 35, image: '📦', instruction: 'Sculpts legs, burns calories! Soft landing' },
+                    { name: 'Battle Ropes', duration: 40, reps: '30 seconds', rest: 25, image: '🌊', instruction: 'Arms and cardio! Fast waves' },
+                ],
+                calisthenics: [
+                    { name: 'Pull-Ups', duration: 45, reps: '8-12', rest: 40, image: '💪', instruction: 'Ultimate upper body! Use assistance if needed' },
+                    { name: 'Push-Ups', duration: 40, reps: '15-20', rest: 30, image: '🔥', instruction: 'Perfect form! Chest to floor, full extension' },
+                    { name: 'Dips', duration: 45, reps: '10-15', rest: 35, image: '🎯', instruction: 'Triceps and chest! Lower until 90 degrees' },
+                    { name: 'Inverted Rows', duration: 40, reps: '12-15', rest: 30, image: '🚣', instruction: 'Pull chest to bar! Squeeze shoulder blades' },
+                    { name: 'Pike Push-Ups', duration: 40, reps: '10-12', rest: 30, image: '⛰️', instruction: 'Shoulder builder! Hips high, press overhead' },
+                    { name: 'Decline Push-Ups', duration: 40, reps: '12-15', rest: 30, image: '📐', instruction: 'Feet elevated! Targets upper chest' },
+                    { name: 'L-Sit Hold', duration: 30, reps: 'Max hold', rest: 30, image: '⚡', instruction: 'Core crusher! Legs straight out' },
+                    { name: 'Jump Squats', duration: 40, reps: '15', rest: 30, image: '🦘', instruction: 'Explosive power! Land softly' },
+                ],
+                mobility: [
+                    { name: 'World\'s Greatest Stretch', duration: 45, reps: '5 each side', rest: 20, image: '🌍', instruction: 'Full body mobility! Lunge, rotate, reach' },
+                    { name: 'Cat-Cow Stretch', duration: 40, reps: '15 reps', rest: 15, image: '🐱', instruction: 'Spinal mobility! Arch and round slowly' },
+                    { name: 'Hip 90/90', duration: 50, reps: '8 each side', rest: 20, image: '🦵', instruction: 'Hip mobility! Rotate between positions' },
+                    { name: 'Thoracic Rotations', duration: 40, reps: '10 each side', rest: 15, image: '🔄', instruction: 'Upper back mobility! Rotate from mid-back' },
+                    { name: 'Ankle Circles', duration: 30, reps: '10 each direction', rest: 10, image: '👟', instruction: 'Ankle mobility! Slow, controlled circles' },
+                    { name: 'Shoulder Dislocates', duration: 40, reps: '12', rest: 20, image: '💪', instruction: 'Shoulder mobility! Use band or dowel' },
+                    { name: 'Deep Squat Hold', duration: 60, reps: '45 sec hold', rest: 20, image: '🧘', instruction: 'Hip and ankle mobility! Stay low, chest up' },
+                    { name: 'Scorpion Stretch', duration: 40, reps: '8 each side', rest: 15, image: '🦂', instruction: 'Spinal rotation! Lying twist, controlled' },
+                ],
+            },
+            home: {
+                pilates: [
+                    { name: 'Hundred', duration: 60, reps: '100 pumps', rest: 20, image: '💯', instruction: 'Flat abs and endurance! Arms pump, core engaged' },
+                    { name: 'Roll Up', duration: 45, reps: '10', rest: 20, image: '🌀', instruction: 'Lengthens abs, improves posture! Articulate spine' },
+                    { name: 'Single Leg Circles', duration: 50, reps: '8 each direction', rest: 20, image: '⭕', instruction: 'Tones hips and inner thighs! Hip stays stable' },
+                    { name: 'Criss-Cross', duration: 45, reps: '20 total', rest: 20, image: '✂️', instruction: 'Sculpts obliques! Elbow to opposite knee' },
+                    { name: 'Side Leg Lifts Series', duration: 60, reps: '15 each', rest: 25, image: '🦵', instruction: 'Shapes outer thighs! Lifts, circles, pulses' },
+                    { name: 'Swimming', duration: 50, reps: '10 sets', rest: 20, image: '🏊', instruction: 'Tones back and glutes! Alternating arms and legs' },
+                    { name: 'Teaser', duration: 45, reps: '8', rest: 25, image: '🌟', instruction: 'Core masterpiece! V-shape balance, arms reach' },
+                    { name: 'Mermaid Stretch', duration: 40, reps: '6 each side', rest: 20, image: '🧜', instruction: 'Lengthens waist! Side bend, reach overhead' },
+                    { name: 'Clam Shells', duration: 45, reps: '20 each', rest: 20, image: '🐚', instruction: 'Builds side glutes! Knees together, lift top knee' },
+                    { name: 'Leg Pull Front', duration: 45, reps: '8', rest: 20, image: '🦸', instruction: 'Plank position, lift one leg! Core and glutes' },
+                    { name: 'Side Kicks Series', duration: 50, reps: '10 each', rest: 20, image: '🥋', instruction: 'Side lying! Front, back, up, circles - shapes hips' },
+                ],
+                reformer: [
+                    { name: 'Footwork - Parallel', duration: 50, reps: '15', rest: 20, image: '🦶', instruction: 'Heels on bar! Sculpts legs, works glutes powerfully' },
+                    { name: 'Footwork - Heels', duration: 45, reps: '15', rest: 20, image: '👠', instruction: 'Heels only! Targets hamstrings and booty' },
+                    { name: 'Footwork - Toes', duration: 45, reps: '15', rest: 20, image: '🩰', instruction: 'On toes! Calf definition and quad engagement' },
+                    { name: 'Single Leg Press', duration: 50, reps: '12 each', rest: 25, image: '🍑', instruction: 'One leg! Maximum glute activation and balance' },
+                    { name: 'Leg Circles', duration: 45, reps: '8 each direction', rest: 20, image: '⭕', instruction: 'Straps on feet! Hip mobility, inner thigh tone' },
+                    { name: 'Frog', duration: 45, reps: '15', rest: 20, image: '🐸', instruction: 'Heels together, knees out! Inner thighs and glutes' },
+                    { name: 'Running', duration: 50, reps: '30 seconds', rest: 20, image: '🏃', instruction: 'Alternate legs fast! Cardio, calf sculpting' },
+                    { name: 'Long Stretch', duration: 45, reps: '10', rest: 25, image: '🌉', instruction: 'Plank on carriage! Core strength, lengthens body' },
+                    { name: 'Down Stretch', duration: 45, reps: '8', rest: 20, image: '🌈', instruction: 'Hips forward, chest up! Opens front, strengthens back' },
+                    { name: 'Elephant', duration: 45, reps: '12', rest: 20, image: '🐘', instruction: 'Pike position! Hamstrings, abs, shoulder stability' },
+                    { name: 'Knee Stretches - Round', duration: 45, reps: '15', rest: 20, image: '🔄', instruction: 'Round back, tuck knees! Deep core work' },
+                    { name: 'Knee Stretches - Arch', duration: 45, reps: '15', rest: 20, image: '🏹', instruction: 'Chest lifted! Glutes and back engagement' },
+                    { name: 'Side Splits', duration: 50, reps: '10 each', rest: 25, image: '🤸', instruction: 'One foot on carriage! Inner/outer thigh sculptor' },
+                    { name: 'Arm Work - Biceps', duration: 40, reps: '15', rest: 20, image: '💪', instruction: 'Seated or standing! Tones arms with springs' },
+                    { name: 'Arm Work - Triceps', duration: 40, reps: '15', rest: 20, image: '🎯', instruction: 'Press down behind you! Eliminates arm jiggle' },
+                    { name: 'Mermaid on Reformer', duration: 45, reps: '8 each', rest: 20, image: '🧜', instruction: 'Side sitting! Cinches waist, oblique definition' },
+                ],
+                equipment: [
+                    { name: 'Pilates Bar Squats', duration: 45, reps: '15', rest: 25, image: '🏋️', instruction: 'Bar with resistance! Sculpts legs and glutes' },
+                    { name: 'Band Glute Kickbacks', duration: 45, reps: '15 each', rest: 25, image: '🍑', instruction: 'Grows booty at home! Squeeze hard at top' },
+                    { name: 'Band Walks', duration: 45, reps: '20 steps each way', rest: 25, image: '🔥', instruction: 'Side glute burner! Band above knees, stay low' },
+                    { name: 'Pilates Bar Chest Press', duration: 45, reps: '15', rest: 20, image: '💎', instruction: 'Lying down with bar! Tones chest and arms' },
+                    { name: 'Band Hip Thrusts', duration: 50, reps: '20', rest: 25, image: '🌟', instruction: 'Home booty builder! Band above knees, squeeze' },
+                    { name: 'Pilates Strap Ab Work', duration: 50, reps: '15', rest: 25, image: '💯', instruction: 'Straps on feet! Leg lowers, scissors for abs' },
+                    { name: 'Band Pull-Aparts', duration: 40, reps: '20', rest: 20, image: '🦋', instruction: 'Tones back and shoulders! Creates posture' },
+                    { name: 'Pilates Bar Lunges', duration: 45, reps: '12 each', rest: 25, image: '👑', instruction: 'Bar adds challenge! Sculpts glutes and thighs' },
+                    { name: 'Band Lateral Raises', duration: 40, reps: '15', rest: 20, image: '🎪', instruction: 'Band under feet! Gorgeous shoulder definition' },
+                    { name: 'Pilates Strap Glute Work', duration: 45, reps: '15 each', rest: 25, image: '🎯', instruction: 'Strap on ankle! Donkey kicks and lifts' },
+                    { name: 'Band Reverse Lunges', duration: 45, reps: '12 each', rest: 25, image: '✨', instruction: 'Sculpts glutes and legs! Step back, resistance' },
+                ],
+                cardio: [
+                    { name: 'High Knees', duration: 40, reps: '40 total', rest: 20, image: '🔥', instruction: 'Cardio blast! Drive knees high and fast' },
+                    { name: 'Jumping Jacks', duration: 40, reps: '30', rest: 20, image: '⚡', instruction: 'Burns calories! Full body cardio' },
+                    { name: 'Skater Hops', duration: 40, reps: '20 each side', rest: 25, image: '⛸️', instruction: 'Tones legs, burns fat! Lateral jumps' },
+                    { name: 'Burpees', duration: 45, reps: '10', rest: 30, image: '💥', instruction: 'Ultimate fat burner! Push yourself' },
+                    { name: 'Jump Lunges', duration: 40, reps: '20 total', rest: 30, image: '🚀', instruction: 'Cardio + leg sculpting! Switch legs mid-air' },
+                ],
+                calisthenics: [
+                    { name: 'Push-Ups', duration: 40, reps: '15-20', rest: 30, image: '🔥', instruction: 'Chest, arms, core! Modify on knees if needed' },
+                    { name: 'Bodyweight Squats', duration: 40, reps: '20', rest: 25, image: '🏆', instruction: 'Perfect form! Booty back, chest up' },
+                    { name: 'Tricep Dips on Chair', duration: 40, reps: '15', rest: 30, image: '💪', instruction: 'Use sturdy chair! Tones back of arms' },
+                    { name: 'Plank', duration: 60, reps: 'Max hold', rest: 30, image: '⏱️', instruction: 'Straight line! Engage everything' },
+                    { name: 'Glute Bridges', duration: 45, reps: '20', rest: 25, image: '🍑', instruction: 'Squeeze at top! Booty builder' },
+                    { name: 'Superman', duration: 40, reps: '15', rest: 20, image: '🦸', instruction: 'Strengthens back! Lift arms and legs' },
+                    { name: 'Wall Sit', duration: 60, reps: 'Max hold', rest: 30, image: '🧱', instruction: 'Thigh burner! Back against wall, 90 degrees' },
+                    { name: 'Bicycle Crunches', duration: 45, reps: '30', rest: 20, image: '🚴', instruction: 'Abs sculptor! Opposite elbow to knee' },
+                ],
+                mobility: [
+                    { name: 'Cat-Cow Stretch', duration: 40, reps: '15 reps', rest: 15, image: '🐱', instruction: 'Spinal mobility! Gentle flow' },
+                    { name: 'Hip Circles', duration: 40, reps: '10 each direction', rest: 15, image: '⭕', instruction: 'Hip mobility! Big circles' },
+                    { name: 'Arm Circles', duration: 30, reps: '15 each direction', rest: 10, image: '🔄', instruction: 'Shoulder mobility! Forward and back' },
+                    { name: 'Leg Swings', duration: 40, reps: '15 each leg', rest: 15, image: '🦵', instruction: 'Hip mobility! Front to back, side to side' },
+                    { name: 'Torso Twists', duration: 40, reps: '20 total', rest: 15, image: '🌀', instruction: 'Spinal rotation! Arms extended' },
+                    { name: 'Ankle Rolls', duration: 30, reps: '10 each', rest: 10, image: '👟', instruction: 'Ankle mobility! Slow circles' },
+                    { name: 'Child\'s Pose', duration: 60, reps: '1 min hold', rest: 15, image: '🧘', instruction: 'Full body stretch! Relax and breathe' },
+                    { name: 'Downward Dog', duration: 45, reps: '45 sec hold', rest: 15, image: '🐕', instruction: 'Full body stretch! Lengthen spine' },
+                ],
+            },
+        };
+
+        // App State
+        let state = {
+            screen: 'home',
+            location: null,
+            workoutType: null,
+            duration: 30,
+            workout: [],
+            currentExercise: 0,
+            timeRemaining: 0,
+            isPlaying: false,
+            restTime: false,
+            timerInterval: null
+        };
+
+        // Sound alert (beep only, no speech during countdown)
+        function playBeep() {
+            // Create a simple beep sound
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        // Text-to-speech ONLY for alerts at completion
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Navigation
+        function showScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(screenName + '-screen').classList.remove('hidden');
+            state.screen = screenName;
+        }
+
+        function selectLocation(location) {
+            state.location = location;
+            state.workoutType = null;
+            
+            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.closest('.option-btn').classList.add('selected');
+            
+            document.getElementById('workout-selection').classList.remove('hidden');
+            
+            const workoutButtons = document.getElementById('workout-buttons');
+            workoutButtons.innerHTML = '';
+            
+            const workouts = {
+                gym: [
+                    { key: 'booty', emoji: '🍑', title: 'Booty Builder', desc: 'Grow & Shape' },
+                    { key: 'abs', emoji: '💎', title: 'Abs Sculptor', desc: 'Tone & Define' },
+                    { key: 'arms', emoji: '💪', title: 'Lean Arms', desc: 'Tone & Sculpt' },
+                    { key: 'legs', emoji: '🦵', title: 'Leg Shaper', desc: 'Shape & Tone' },
+                    { key: 'fullbody', emoji: '🔥', title: 'Fat Burn HIIT', desc: 'Full Body Burn' },
+                    { key: 'calisthenics', emoji: '🤸', title: 'Calisthenics', desc: 'Bodyweight Power' },
+                    { key: 'mobility', emoji: '🌈', title: 'Mobility', desc: 'Warm-Up & Recovery' }
+                ],
+                home: [
+                    { key: 'pilates', emoji: '🧘', title: 'Mat Pilates', desc: 'Lengthen & Tone' },
+                    { key: 'reformer', emoji: '🎯', title: 'Reformer', desc: 'Full Body Sculpt' },
+                    { key: 'equipment', emoji: '💪', title: 'Bands & Bar', desc: 'Resistance Training' },
+                    { key: 'cardio', emoji: '🔥', title: 'Cardio Blast', desc: 'Fat Burning' },
+                    { key: 'calisthenics', emoji: '🤸', title: 'Calisthenics', desc: 'Bodyweight Workout' },
+                    { key: 'mobility', emoji: '🌈', title: 'Mobility', desc: 'Stretch & Flow' }
+                ]
+            };
+            
+            workouts[location].forEach(workout => {
+                const btn = document.createElement('div');
+                btn.className = 'option-btn';
+                btn.innerHTML = `
+                    <div class="emoji">${workout.emoji}</div>
+                    <div class="title">${workout.title}</div>
+                    <div class="desc">${workout.desc}</div>
+                `;
+                btn.onclick = () => selectWorkout(workout.key);
+                workoutButtons.appendChild(btn);
+            });
+        }
+
+        function selectWorkout(type) {
+            state.workoutType = type;
+            
+            document.querySelectorAll('#workout-buttons .option-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.closest('.option-btn').classList.add('selected');
+            
+            document.getElementById('duration-selection').classList.remove('hidden');
+        }
+
+        function updateDuration(value) {
+            state.duration = parseInt(value);
+            document.getElementById('duration-display').textContent = value;
+        }
+
+        function startWorkout() {
+            generateWorkout();
+            showScreen('workout');
+        }
+
+        function generateWorkout() {
+            const exercises = workoutDatabase[state.location][state.workoutType];
+            
+            if (!exercises || exercises.length === 0) {
+                alert('No exercises found!');
+                return;
+            }
+            
+            const availableTime = state.duration * 60;
+            let generatedWorkout = [];
+            let totalTime = 0;
+            let rounds = 0;
+            const maxRounds = 10;
+            
+            while (totalTime < availableTime && rounds < maxRounds) {
+                for (let exercise of exercises) {
+                    const exerciseTime = exercise.duration + exercise.rest;
+                    if (totalTime + exerciseTime <= availableTime) {
+                        generatedWorkout.push({...exercise});
+                        totalTime += exerciseTime;
+                    } else {
+                        break;
+                    }
+                }
+                rounds++;
+                if (totalTime >= availableTime) break;
+            }
+
+            if (generatedWorkout.length === 0 && exercises.length > 0) {
+                generatedWorkout = [exercises[0]];
+            }
+
+            state.workout = generatedWorkout;
+            state.currentExercise = 0;
+            state.timeRemaining = generatedWorkout[0]?.duration || 0;
+            state.restTime = false;
+            state.isPlaying = false;
+            
+            updateWorkoutDisplay();
+            
+            // Announce exercise start ONCE at beginning
+            const exercise = state.workout[0];
+            if (exercise) {
+                speak(`Starting ${exercise.name}. ${exercise.reps} reps. ${exercise.instruction}`);
+            }
+        }
+
+        function updateWorkoutDisplay() {
+            const exercise = state.workout[state.currentExercise];
+            
+            if (!exercise) return;
+            
+            const progress = ((state.currentExercise + 1) / state.workout.length) * 100;
+            
+            document.getElementById('current-exercise-num').textContent = state.currentExercise + 1;
+            document.getElementById('total-exercises').textContent = state.workout.length;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            
+            if (state.restTime) {
+                document.getElementById('exercise-emoji').textContent = '😌';
+                document.getElementById('exercise-name').textContent = 'Rest Time';
+                document.getElementById('exercise-name').className = 'exercise-name rest-indicator';
+                document.getElementById('exercise-reps').textContent = 'Catch your breath';
+                document.getElementById('exercise-instruction').textContent = '';
+                document.getElementById('timer-label').textContent = 'Rest remaining';
+            } else {
+                document.getElementById('exercise-emoji').textContent = exercise.image;
+                document.getElementById('exercise-name').textContent = exercise.name;
+                document.getElementById('exercise-name').className = 'exercise-name';
+                document.getElementById('exercise-reps').textContent = exercise.reps + ' reps';
+                document.getElementById('exercise-instruction').textContent = exercise.instruction;
+                document.getElementById('timer-label').textContent = 'Time remaining';
+            }
+            
+            document.getElementById('timer-display').textContent = formatTime(state.timeRemaining);
+            
+            const nextList = document.getElementById('next-exercises-list');
+            nextList.innerHTML = '';
+            
+            const nextExercises = state.workout.slice(state.currentExercise + 1, state.currentExercise + 4);
+            nextExercises.forEach(ex => {
+                const item = document.createElement('div');
+                item.className = 'next-item';
+                item.innerHTML = `
+                    <div class="next-item-emoji">${ex.image}</div>
+                    <div class="next-item-info">
+                        <div class="next-item-name">${ex.name}</div>
+                        <div class="next-item-reps">${ex.reps}</div>
+                    </div>
+                `;
+                nextList.appendChild(item);
+            });
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function togglePlayPause() {
+            state.isPlaying = !state.isPlaying;
+            
+            const btn = document.getElementById('play-pause-btn');
+            if (state.isPlaying) {
+                btn.textContent = '⏸';
+                btn.className = 'control-btn pause-btn';
+                if (state.timeRemaining <= 0) {
+                    state.timeRemaining = state.workout[state.currentExercise]?.duration || 45;
+                }
+                startTimer();
+            } else {
+                btn.textContent = '▶';
+                btn.className = 'control-btn play-btn';
+                if (state.timerInterval) {
+                    clearInterval(state.timerInterval);
+                    state.timerInterval = null;
+                }
+            }
+        }
+
+        function startTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+            }
+            
+            state.timerInterval = setInterval(() => {
+                if (!state.isPlaying) {
+                    clearInterval(state.timerInterval);
+                    return;
+                }
+                
+                state.timeRemaining--;
+                
+                // Beep at 3, 2, 1 seconds
+                if (state.timeRemaining <= 3 && state.timeRemaining > 0) {
+                    playBeep();
+                }
+                
+                if (state.timeRemaining <= 0) {
+                    if (state.restTime) {
+                        // Rest is done, move to next exercise
+                        if (state.currentExercise < state.workout.length - 1) {
+                            playBeep();
+                            speak('Next exercise');
+                            state.currentExercise++;
+                            state.restTime = false;
+                            state.timeRemaining = state.workout[state.currentExercise].duration;
+                            
+                            // Announce new exercise
+                            const exercise = state.workout[state.currentExercise];
+                            setTimeout(() => {
+                                speak(`${exercise.name}. ${exercise.reps} reps.`);
+                            }, 1500);
+                        } else {
+                            playBeep();
+                            speak('Workout complete! Amazing job!');
+                            state.isPlaying = false;
+                            clearInterval(state.timerInterval);
+                            state.timerInterval = null;
+                            showCompleteScreen();
+                            return;
+                        }
+                    } else {
+                        // Exercise is done, start rest
+                        playBeep();
+                        speak('Time! Rest now.');
+                        state.restTime = true;
+                        state.timeRemaining = state.workout[state.currentExercise].rest;
+                    }
+                }
+                
+                updateWorkoutDisplay();
+            }, 1000);
+        }
+
+        function skipExercise() {
+            if (state.currentExercise < state.workout.length - 1) {
+                if (state.timerInterval) {
+                    clearInterval(state.timerInterval);
+                    state.timerInterval = null;
+                }
+                
+                state.currentExercise++;
+                state.restTime = false;
+                state.timeRemaining = state.workout[state.currentExercise].duration;
+                
+                if (state.isPlaying) {
+                    startTimer();
+                }
+                
+                // Announce new exercise
+                const exercise = state.workout[state.currentExercise];
+                speak(`${exercise.name}. ${exercise.reps} reps.`);
+                
+                updateWorkoutDisplay();
+            }
+        }
+
+        function showCompleteScreen() {
+            document.getElementById('stats-number').textContent = state.workout.length;
+            showScreen('complete');
+        }
+
+        function goHome() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+            
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            
+            state = {
+                screen: 'home',
+                location: null,
+                workoutType: null,
+                duration: 30,
+                workout: [],
+                currentExercise: 0,
+                timeRemaining: 0,
+                isPlaying: false,
+                restTime: false,
+                timerInterval: null
+            };
+            
+            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('workout-selection').classList.add('hidden');
+            document.getElementById('duration-selection').classList.add('hidden');
+            document.getElementById('workout-buttons').innerHTML = '';
+            document.getElementById('duration-slider').value = 30;
+            document.getElementById('duration-display').textContent = '30';
+            
+            showScreen('home');
+        }
+
+        window.addEventListener('beforeunload', function(e) {
+            if (state.isPlaying) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    </script>
+</body>
+</html>
